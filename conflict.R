@@ -14,6 +14,9 @@ conflict
 
 conflict$source <- factor(conflict$source)
 
+labels <- c('ru-opinion of ukr' = "Russians on Ukrainians", 'ukr opinion of ru' = "Ukrainians on Russians")
+
+
 conflict %>% 
   transmute(date=date,
             good=v_good+good,
@@ -25,4 +28,13 @@ conflict %>%
   ggplot(aes(x=date, y=value, colour= measure)) +
   geom_point()+
   geom_line()+
-  facet_wrap(~source)
+  facet_wrap(~source, labeller=labeller(source=labels))+
+  labs(title='Russian opinion of Ukraine is steady, \nUkrainian opinion of Russia is Dynamic',
+       subtitle= 'Ukrainians recently saw a minor improvement in their attitude towards Russia, \nalthough skepticism also growing.',
+       x= 'Date',
+       y='') +
+  scale_y_continuous(labels = scales::dollar_format(suffix = "%", prefix = "")) +
+  scale_colour_discrete(name="Collapsed opinion",
+                        breaks=c("bad", "dont_know", "good"),
+                        labels=c("Bad", "Don't know", "Good"))+
+  theme_minimal()
